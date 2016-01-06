@@ -9,6 +9,7 @@
 <use   name="DataFormats/L1GlobalMuonTrigger"/>
 <use   name="DataFormats/L1GlobalTrigger"/>
 <use   name="DataFormats/L1Trigger"/>
+<use   name="DataFormats/L1TCalorimeter"/>
 <use   name="DataFormats/FEDRawData"/>
 <use   name="CondTools/L1Trigger"/>
 <export>
