@@ -146,7 +146,7 @@ void L1TStage2MuonComp::analyze(const edm::Event& e, const edm::EventSetup& c) {
 
     muonIt1 = muonBxColl1->begin(iBx);
     muonIt2 = muonBxColl2->begin(iBx);
-    while(muonIt1 != muonBxColl1->end(iBx) && muonIt2 != muonBxColl1->end(iBx)) {
+    while(muonIt1 != muonBxColl1->end(iBx) && muonIt2 != muonBxColl2->end(iBx)) {
       summary->Fill(MUONALL);
       if (muonIt1->hwPt() != muonIt2->hwPt()) {
         muonMismatch = true;
@@ -202,7 +202,7 @@ void L1TStage2MuonComp::analyze(const edm::Event& e, const edm::EventSetup& c) {
       } else {
         summary->Fill(MUONGOOD);
       }
-
+      
       ++muonIt1;
       ++muonIt2;
     }

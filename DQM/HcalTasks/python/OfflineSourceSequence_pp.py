@@ -10,6 +10,7 @@ from DQM.HcalTasks.DigiTask import digiTask
 from DQM.HcalTasks.RawTask import rawTask
 from DQM.HcalTasks.TPTask import tpTask
 from DQM.HcalTasks.RecHitTask import recHitTask
+from L1Trigger.Configuration.ValL1Emulator_cff import *
 
 #	set processing type to Offine
 digiTask.ptype = cms.untracked.int32(1)
@@ -22,6 +23,7 @@ tpTask.tagEmul = cms.untracked.InputTag("valHcalTriggerPrimitiveDigis")
 
 hcalOfflineSourceSequence = cms.Sequence(
 	digiTask
+        +valHcalTriggerPrimitiveDigis
 	+tpTask
 	+recHitTask
 	+rawTask)

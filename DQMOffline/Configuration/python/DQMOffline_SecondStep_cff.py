@@ -27,7 +27,7 @@ DQMOffline_SecondStep_PreDPG = cms.Sequence( dqmDcsInfoClient *
                                              rpcTier0Client *
                                              cscOfflineCollisionsClients *
                                              es_dqm_client_offline *
-											 hcalOfflineHarvesting *
+					     hcalOfflineHarvesting *
                                              HcalDQMOfflinePostProcessor * 
                                              dqmFEDIntegrityClient )
 
@@ -35,9 +35,9 @@ DQMOffline_SecondStepDPG = cms.Sequence( dqmRefHistoRootFileGetter *
                                          DQMOffline_SecondStep_PreDPG *
                                          DQMMessageLoggerClientSeq )
 
+from DQMOffline.L1Trigger.L1TriggerDqmOffline_cff import *
 from DQMOffline.Muon.muonQualityTests_cff import *
 from DQMOffline.EGamma.egammaPostProcessing_cff import *
-from DQMOffline.L1Trigger.L1TriggerDqmOffline_cff import *
 from DQMOffline.Trigger.DQMOffline_Trigger_Client_cff import *
 from DQMOffline.Trigger.DQMOffline_HLT_Client_cff import *
 from DQMOffline.RecoB.dqmCollector_cff import *
@@ -45,7 +45,8 @@ from DQMOffline.JetMET.SusyPostProcessor_cff import *
 from DQMOffline.JetMET.dataCertificationJetMET_cff import *
 from DQM.TrackingMonitorClient.TrackingClientConfig_Tier0_cff import *
 
-DQMOffline_SecondStep_PrePOG = cms.Sequence( TrackingOfflineDQMClient *
+DQMOffline_SecondStep_PrePOG = cms.Sequence( l1TriggerDqmOfflineClient *
+                                             TrackingOfflineDQMClient *
                                              muonQualityTests *
                                              egammaPostProcessing *
                                              triggerOfflineDQMClient *
@@ -54,6 +55,10 @@ DQMOffline_SecondStep_PrePOG = cms.Sequence( TrackingOfflineDQMClient *
                                              alcaBeamMonitorClient *
                                              SusyPostProcessorSequence *
                                              runTauEff)
+
+if eras.stage2L1Trigger.isChosen()==False:
+    DQMOffline_SecondStep_PrePOG.remove(l1TriggerDqmOfflineClient)
+
 eras.phase1Pixel.toReplaceWith(DQMOffline_SecondStep_PrePOG, DQMOffline_SecondStep_PrePOG.copyAndExclude([
     hltOfflineDQMClient, # No HLT yet for 2017, so no need to run the DQM (avoiding excessive printouts)
     runTauEff,           # Excessive printouts because 2017 doesn't have HLT yet

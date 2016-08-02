@@ -99,6 +99,7 @@ def _appendStage2Digis(obj):
     l1Stage2Digis = [
         'keep *_gtStage2Digis__*', 
         'keep *_gmtStage2Digis_Muon_*',
+        'keep *_caloStage2Digis_CaloTower_*',
         'keep *_caloStage2Digis_Jet_*',
         'keep *_caloStage2Digis_Tau_*',
         'keep *_caloStage2Digis_EGamma_*',

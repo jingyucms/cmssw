@@ -18,15 +18,15 @@ from DQMOffline.L1Trigger.L1TriggerDqmOffline_cff import *
 # changes for MC
 
 # do not run the emulator in MC
-l1TriggerDqmOffline.remove(l1TriggerEmulatorOnline)                                   
 
+from Configuration.StandardSequences.Eras import eras
 
-# do not run the emulator client in MC
-l1TriggerDqmOfflineClient.remove(l1EmulatorMonitorClient) 
-
-
-# correct input tags for MC for the private unpacking
-   
-dqmGctDigis.inputLabel = 'rawDataCollector'
-dqmGtDigis.DaqGtInputTag = 'rawDataCollector'
+# stage1 stuff
+if eras.Run2_2016.isChosen() == False:
+    l1TriggerDqmOffline.remove(l1TriggerEmulatorOnline)                                   
+    # do not run the emulator client in MC
+    l1TriggerDqmOfflineClient.remove(l1EmulatorMonitorClient) 
+    # correct input tags for MC for the private unpacking
+    dqmGctDigis.inputLabel = 'rawDataCollector'
+    dqmGtDigis.DaqGtInputTag = 'rawDataCollector'
                                   

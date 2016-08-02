@@ -27,10 +27,7 @@ from DQMOffline.L1Trigger.L1TMonitorClientOffline_cff import *
 
 
 # DQM offline L1 Trigger versus Reco modules
-
-import DQMServices.Components.DQMEnvironment_cfi
-dqmEnvL1TriggerReco = DQMServices.Components.DQMEnvironment_cfi.dqmEnv.clone()
-dqmEnvL1TriggerReco.subSystemFolder = 'L1T/L1TriggerVsReco'
+# Under development
 
 #
 # DQM L1 Trigger Emulator in offline environment
@@ -137,25 +134,24 @@ l1TriggerOnline = cms.Sequence(
                                     
 l1TriggerOffline = cms.Sequence(
                                 l1TriggerOnline
-                                 * dqmEnvL1TriggerReco
                                 )
  
 #
- 
+
 l1TriggerEmulatorOnline = cms.Sequence(
                                 l1Stage1HwValEmulatorMonitor
                                 * dqmEnvL1TEMU
                                 )
 
 l1TriggerEmulatorOffline = cms.Sequence(
-                                l1TriggerEmulatorOnline                                
+                                l1TriggerEmulatorOnline          
                                 )
 #
 
 # DQM Offline Step 1 sequence
 l1TriggerDqmOffline = cms.Sequence(
                                 l1TriggerOffline
-                                * l1tRate_Offline
+                                * l1tRate_Offline  
                                 * l1tSync_Offline
                                 * l1TriggerEmulatorOffline
                                 )                                  
@@ -163,8 +159,7 @@ l1TriggerDqmOffline = cms.Sequence(
 # DQM Offline Step 2 sequence                                 
 l1TriggerDqmOfflineClient = cms.Sequence(
                                 l1tMonitorStage1Client
-                                * l1EmulatorMonitorClient
-                                )
+                                * l1EmulatorMonitorClient                                                           )
 
 
 #
@@ -251,3 +246,46 @@ l1TriggerStage1Clients.remove(l1tTestsSummary)
 #l1EmulatorMonitorClient.remove(l1EmulatorQualityTests)
 l1EmulatorMonitorClient.remove(l1EmulatorErrorFlagClient)
 #l1EmulatorMonitorClient.remove(l1EmulatorEventInfoClient)
+
+
+### stage2 stuff ###
+# Running the same thing as online for now #
+# Need to develop modules comparing L1obj vs RECOobj # 
+
+from DQM.L1TMonitor.L1TStage2_cff import *
+from DQM.L1TMonitorClient.L1TStage2MonitorClient_cff import *
+from DQM.L1TMonitor.L1TStage2Emulator_cff import *
+from DQM.L1TMonitorClient.L1TStage2EmulatorMonitorClient_cff import *
+from EventFilter.L1TXRawToDigi.caloLayer1Stage2Digis_cfi import *
+from EventFilter.L1TRawToDigi.emtfStage2Digis_cfi import *
+
+#valCaloStage2Layer2Digis.towerToken = cms.InputTag("valCaloStage2Layer1Digis")
+#l1tdeStage2CaloLayer1.dataSource = cms.InputTag("valCaloStage2Layer1Digis")
+#caloStage2Digis.FedIds = cms.vint32( 1360, 1366 )
+
+l1TriggerStage2Offline = cms.Sequence ( l1tCaloLayer1Digis
+                                        * emtfStage2Digis
+                                        * l1tStage2OnlineDQM
+                                        * dqmEnvL1T
+                                        * Stage2L1HardwareValidation
+                                        * l1tStage2EmulatorOnlineDQM
+                                        * dqmEnvL1TEMU)
+
+l1tStage2EmulatorOnlineDQM.remove(l1tStage2CaloLayer2)
+
+l1TriggerStage2OfflineClient = cms.Sequence ( l1tStage2MonitorClient
+                                              * l1tStage2EmulatorMonitorClient)
+
+from SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff import *
+HcalTPGCoderULUT.LUTGenerationMode = cms.bool(False)
+
+if eras.stage2L1Trigger.isChosen():
+    from L1Trigger.L1TMuon.hackConditions_cff import *
+    from L1Trigger.L1TCalorimeter.hackConditions_cff import *
+    gmtParams.caloInputsMasked = cms.bool(True)
+    from L1Trigger.L1TGlobal.hackConditions_cff import *    
+    from SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff import *
+    HcalTPGCoderULUT.LUTGenerationMode = cms.bool(False)
+
+eras.stage2L1Trigger.toReplaceWith(l1TriggerDqmOffline,l1TriggerStage2Offline)
+eras.stage2L1Trigger.toReplaceWith(l1TriggerDqmOfflineClient,l1TriggerStage2OfflineClient)
